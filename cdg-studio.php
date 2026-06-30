@@ -24,13 +24,10 @@ require_once CDG_STUDIO_PATH . 'chiffres/repository.php';
 require_once CDG_STUDIO_PATH . 'chiffres/admin.php';
 require_once CDG_STUDIO_PATH . 'frontend/shortcodes.php';
 // Chargement progressif du nouveau Core CDG Studio.
-require_once CDG_STUDIO_PATH . 'app/Core/Application.php';
-require_once CDG_STUDIO_PATH . 'app/Core/Loader.php';
-require_once CDG_STUDIO_PATH . 'app/Core/Plugin.php';
+require_once CDG_STUDIO_PATH . 'vendor/autoload.php';
 
-if (class_exists('\CDGStudio\Core\Plugin')) {
-    \CDGStudio\Core\Plugin::boot();
-}
+\CDGStudio\Core\Plugin::boot();
+
 register_activation_hook(__FILE__, 'cdg_studio_activate');
 
 function cdg_studio_activate() {
