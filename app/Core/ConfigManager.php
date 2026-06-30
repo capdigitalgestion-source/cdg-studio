@@ -1,16 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CDGStudio\Core;
 
-defined('ABSPATH') || exit;
-
-class ConfigManager
+final class ConfigManager
 {
-    private array $config = [];
-
-    public function __construct(array $config = [])
-    {
-        $this->config = $config;
+    public function __construct(
+        private array $config = []
+    ) {
     }
 
     public function get(string $key, mixed $default = null): mixed
@@ -23,13 +21,13 @@ class ConfigManager
         $this->config[$key] = $value;
     }
 
-    public function all(): array
-    {
-        return $this->config;
-    }
-
     public function has(string $key): bool
     {
         return array_key_exists($key, $this->config);
+    }
+
+    public function all(): array
+    {
+        return $this->config;
     }
 }
