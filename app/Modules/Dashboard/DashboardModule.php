@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace CDGStudio\Modules\Dashboard;
 
-use CDGStudio\Contracts\ModuleInterface;
+use CDGStudio\Core\AbstractModule;
 
-final class DashboardModule implements ModuleInterface
+final class DashboardModule extends AbstractModule
 {
     public function register(): void
     {
-        // Enregistrement des services du module.
+        // Enregistrement des services du module Dashboard.
     }
 
     public function boot(): void
     {
-        // Démarrage du module.
+        $this->logger()->info('DashboardModule boot OK');
     }
 }
