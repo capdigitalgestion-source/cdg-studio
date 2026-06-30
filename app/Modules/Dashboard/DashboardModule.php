@@ -8,6 +8,8 @@ use CDGStudio\Core\AbstractModule;
 
 final class DashboardModule extends AbstractModule
 {
+    private const MENU_SLUG = 'cdg-studio';
+
     public function register(): void
     {
         $this->container->set(
@@ -32,12 +34,15 @@ final class DashboardModule extends AbstractModule
 
     public function registerMenu(): void
     {
+        /** @var DashboardController $controller */
+        $controller = $this->container->get('dashboard.controller');
+
         add_menu_page(
             'CDG Studio',
             'CDG Studio',
             'manage_options',
-            'cdg-studio',
-            [$this->container->get('dashboard.controller'), 'render'],
+            self::MENU_SLUG,
+            [$controller, 'render'],
             'dashicons-chart-area',
             56
         );
