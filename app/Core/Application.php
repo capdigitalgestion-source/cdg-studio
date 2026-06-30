@@ -8,8 +8,6 @@ use CDGStudio\Support\Container;
 
 final class Application
 {
-    public const VERSION = '1.0.0';
-
     private Container $container;
 
     private ModuleLoader $modules;
@@ -48,7 +46,7 @@ final class Application
 
     public function version(): string
     {
-        return $this->config()->get('version', self::VERSION);
+        return $this->config()->get('version', '0.0.0');
     }
 
     private function registerCoreServices(): void
@@ -61,7 +59,8 @@ final class Application
             'plugin_file' => defined('CDG_STUDIO_FILE') ? CDG_STUDIO_FILE : '',
             'plugin_path' => defined('CDG_STUDIO_PATH') ? CDG_STUDIO_PATH : '',
             'plugin_url'  => defined('CDG_STUDIO_URL') ? CDG_STUDIO_URL : '',
-            'version'     => defined('CDG_STUDIO_VERSION') ? CDG_STUDIO_VERSION : self::VERSION,
+            'version'     => defined('CDG_STUDIO_VERSION') ? CDG_STUDIO_VERSION : '0.0.0',
+            'db_version'  => defined('CDG_STUDIO_DB_VERSION') ? CDG_STUDIO_DB_VERSION : '0.0.0',
         ]));
     }
 }
