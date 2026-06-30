@@ -4,33 +4,46 @@ declare(strict_types=1);
 
 namespace CDGStudio\Core;
 
-/**
- * Application principale de CDG Studio.
- *
- * Cette classe représente le point d'entrée du noyau de l'application.
- * À terme, elle sera responsable de :
- * - charger les services ;
- * - enregistrer les modules ;
- * - démarrer le plugin.
- */
+use CDGStudio\Support\Container;
+
 final class Application
 {
-    /**
-     * Version du noyau.
-     */
     public const VERSION = '1.0.0';
 
-    /**
-     * Démarre l'application.
-     */
-    public function boot(): void
+    private Container $container;
+
+    private ModuleLoader $modules;
+
+    public function __construct()
     {
-        // Le démarrage du plugin sera progressivement déplacé ici.
+        $this->container = new Container();
+        $this->modules = new ModuleLoader();
     }
 
-    /**
-     * Retourne la version du Core.
-     */
+    public function boot(): void
+    {
+        $this->registerCoreServices();
+
+        $this->modules->register();
+        $this->modules->boot();
+    }
+
+    public function container(): Container
+    {
+        return $this->container;
+    }
+
+    public function modules(): ModuleLoader
+    {
+        return $this->modules;
+    }
+
+    private function registerCoreServices(): void
+    {
+        $this->container->set('app', fn () => $this);
+        $this->container->set('modules', fn () => $this->modules);
+    }
+
     public function version(): string
     {
         return self::VERSION;
