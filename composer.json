@@ -6,5 +6,8 @@
         "psr-4": {
             "CDGStudio\\": "app/"
         }
+    },
+    "require": {
+        "psr/log": "^3.0"
     }
 }

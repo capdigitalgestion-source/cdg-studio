@@ -4,26 +4,11 @@ declare(strict_types=1);
 
 namespace CDGStudio\Support;
 
-use CDGStudio\Contracts\LoggerInterface;
+use Psr\Log\AbstractLogger;
 
-final class Logger implements LoggerInterface
+final class Logger extends AbstractLogger
 {
-    public function info(string $message, array $context = []): void
-    {
-        $this->write('INFO', $message, $context);
-    }
-
-    public function warning(string $message, array $context = []): void
-    {
-        $this->write('WARNING', $message, $context);
-    }
-
-    public function error(string $message, array $context = []): void
-    {
-        $this->write('ERROR', $message, $context);
-    }
-
-    private function write(string $level, string $message, array $context): void
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         if (!defined('WP_DEBUG_LOG') || WP_DEBUG_LOG !== true) {
             return;
@@ -31,8 +16,8 @@ final class Logger implements LoggerInterface
 
         $line = sprintf(
             '[CDG Studio] [%s] %s',
-            $level,
-            $message
+            strtoupper((string) $level),
+            (string) $message
         );
 
         if ($context !== []) {
