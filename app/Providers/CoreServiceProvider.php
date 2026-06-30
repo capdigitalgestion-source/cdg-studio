@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CDGStudio\Providers;
 
+use CDGStudio\Support\Logger;
 use CDGStudio\Contracts\ServiceProviderInterface;
 use CDGStudio\Core\Application;
 use CDGStudio\Core\ConfigManager;
@@ -32,4 +33,5 @@ final class CoreServiceProvider implements ServiceProviderInterface
             'db_version'  => defined('CDG_STUDIO_DB_VERSION') ? CDG_STUDIO_DB_VERSION : '0.0.0',
         ]));
     }
+    $container->set('logger', fn () => new Logger());
 }
