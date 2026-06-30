@@ -11,6 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+define('CDG_STUDIO_FILE', __FILE__);
 define('CDG_STUDIO_VERSION', '0.8.0');
 define('CDG_STUDIO_DB_VERSION', '0.5.0');
 define('CDG_STUDIO_PATH', plugin_dir_path(__FILE__));

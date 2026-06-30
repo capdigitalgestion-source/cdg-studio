@@ -48,7 +48,7 @@ final class Application
 
     public function version(): string
     {
-        return self::VERSION;
+        return $this->config()->get('version', self::VERSION);
     }
 
     private function registerCoreServices(): void
@@ -58,7 +58,10 @@ final class Application
         $this->container->set('modules', fn () => $this->modules);
 
         $this->container->set('config', fn () => new ConfigManager([
-            'version' => self::VERSION,
+            'plugin_file' => defined('CDG_STUDIO_FILE') ? CDG_STUDIO_FILE : '',
+            'plugin_path' => defined('CDG_STUDIO_PATH') ? CDG_STUDIO_PATH : '',
+            'plugin_url'  => defined('CDG_STUDIO_URL') ? CDG_STUDIO_URL : '',
+            'version'     => defined('CDG_STUDIO_VERSION') ? CDG_STUDIO_VERSION : self::VERSION,
         ]));
     }
 }
