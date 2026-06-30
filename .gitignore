@@ -24,3 +24,7 @@ coverage/
 
 # Archives
 *.zip
+
+# Arborescences générées
+ARCHITECTURE_TREE.txt
+ARCHITECTURE_APP.txt
