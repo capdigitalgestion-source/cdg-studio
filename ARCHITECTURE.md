@@ -30,15 +30,3 @@ Service Providers
 ModuleLoader
     ↓
 Modules
-
-app/
-├── Contracts/
-├── Core/
-├── Events/
-├── Exceptions/
-├── Helpers/
-├── Http/
-├── Modules/
-├── Providers/
-├── Services/
-└── Support/
