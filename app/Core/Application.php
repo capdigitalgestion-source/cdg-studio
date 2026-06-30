@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CDGStudio\Core;
 
 use CDGStudio\Support\Container;
+use CDGStudio\Modules\Dashboard\DashboardModule;
 
 final class Application
 {
