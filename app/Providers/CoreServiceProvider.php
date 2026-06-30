@@ -11,6 +11,7 @@ use CDGStudio\Core\ModuleLoader;
 use CDGStudio\Support\Container;
 use CDGStudio\Support\EventDispatcher;
 use CDGStudio\Support\Logger;
+use CDGStudio\Support\HookManager;
 
 final class CoreServiceProvider implements ServiceProviderInterface
 {
@@ -22,6 +23,7 @@ final class CoreServiceProvider implements ServiceProviderInterface
 
     public function register(Container $container): void
     {
+        $container->set('hooks', fn () => new HookManager());
         $container->set('app', fn () => $this->app);
 
         $container->set('modules', fn () => $this->modules);
