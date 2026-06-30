@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace CDGStudio\Providers;
 
-use CDGStudio\Support\EventDispatcher;
-use CDGStudio\Support\Logger;
 use CDGStudio\Contracts\ServiceProviderInterface;
 use CDGStudio\Core\Application;
 use CDGStudio\Core\ConfigManager;
 use CDGStudio\Core\ModuleLoader;
 use CDGStudio\Support\Container;
+use CDGStudio\Support\EventDispatcher;
+use CDGStudio\Support\Logger;
 
 final class CoreServiceProvider implements ServiceProviderInterface
 {
@@ -22,7 +22,6 @@ final class CoreServiceProvider implements ServiceProviderInterface
 
     public function register(Container $container): void
     {
-        $container->set('events', fn () => new EventDispatcher());
         $container->set('app', fn () => $this->app);
 
         $container->set('modules', fn () => $this->modules);
@@ -34,6 +33,9 @@ final class CoreServiceProvider implements ServiceProviderInterface
             'version'     => defined('CDG_STUDIO_VERSION') ? CDG_STUDIO_VERSION : '0.0.0',
             'db_version'  => defined('CDG_STUDIO_DB_VERSION') ? CDG_STUDIO_DB_VERSION : '0.0.0',
         ]));
+
+        $container->set('events', fn () => new EventDispatcher());
+
+        $container->set('logger', fn () => new Logger());
     }
-    $container->set('logger', fn () => new Logger());
 }
