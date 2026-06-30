@@ -37,14 +37,13 @@ final class DashboardModule extends AbstractModule
         /** @var DashboardController $controller */
         $controller = $this->container->get('dashboard.controller');
 
-        add_menu_page(
-            'CDG Studio',
-            'CDG Studio',
-            'manage_options',
-            self::MENU_SLUG,
-            [$controller, 'render'],
-            'dashicons-chart-area',
-            56
-        );
+       add_submenu_page(
+    'cdg-studio',
+    'Tableau de bord',
+    'Tableau de bord',
+    'manage_options',
+    'cdg-studio-dashboard',
+    [$controller, 'render']
+);
     }
 }
