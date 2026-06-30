@@ -38,7 +38,7 @@ function cdg_studio_dashboard_page() {
 
         <div class="cdg-dashboard-card cdg-dashboard-wide">
             <h2>Module actif : Chiffres clés</h2>
-            <p>La version 0.7 ajoute une édition plus confortable, un aperçu responsive, une bibliothèque d'icônes rapides et un export JSON.</p>
+            <p>La version 0.8.0 ajoute le moteur de carrousel responsive, l’export JSON et l’aperçu amélioré.</p>
             <p><a class="button button-primary" href="<?php echo esc_url(admin_url('admin.php?page=cdg-chiffres')); ?>">Gérer les chiffres clés</a></p>
         </div>
     </div>
