@@ -22,6 +22,7 @@ final class Application
     public function boot(): void
     {
         $this->registerProviders();
+        $this->registerModules();
 
         $this->modules->register();
         $this->modules->boot();
@@ -51,16 +52,25 @@ final class Application
     }
 
     protected function providers(): array
-{
-    return [
-        new CoreServiceProvider($this, $this->modules),
-    ];
-}
-
-private function registerProviders(): void
-{
-    foreach ($this->providers() as $provider) {
-        $provider->register($this->container);
+    {
+        return [
+            new CoreServiceProvider($this, $this->modules),
+        ];
     }
-}
+
+    private function registerProviders(): void
+    {
+        foreach ($this->providers() as $provider) {
+            $provider->register($this->container);
+        }
+    }
+
+    private function registerModules(): void
+    {
+        foreach (ModuleRegistry::all() as $moduleClass) {
+            $this->modules->add(
+                new $moduleClass($this->container)
+            );
+        }
+    }
 }
