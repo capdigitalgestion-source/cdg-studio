@@ -40,7 +40,6 @@ final class DashboardModule extends AbstractModule
        add_submenu_page(
     'cdg-studio',
     'Tableau de bord',
-    'Tableau de bord',
     'manage_options',
     'cdg-studio-dashboard',
     [$controller, 'render']
