@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CDGStudio\Providers;
 
+use CDGStudio\Support\EventDispatcher;
 use CDGStudio\Support\Logger;
 use CDGStudio\Contracts\ServiceProviderInterface;
 use CDGStudio\Core\Application;
@@ -21,6 +22,7 @@ final class CoreServiceProvider implements ServiceProviderInterface
 
     public function register(Container $container): void
     {
+        $container->set('events', fn () => new EventDispatcher());
         $container->set('app', fn () => $this->app);
 
         $container->set('modules', fn () => $this->modules);
