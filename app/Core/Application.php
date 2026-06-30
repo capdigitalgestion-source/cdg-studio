@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CDGStudio\Core;
 
 use CDGStudio\Support\Container;
-use CDGStudio\Modules\Dashboard\DashboardModule;
 
 final class Application
 {
@@ -39,14 +38,27 @@ final class Application
         return $this->modules;
     }
 
-    private function registerCoreServices(): void
+    public function config(): ConfigManager
     {
-        $this->container->set('app', fn () => $this);
-        $this->container->set('modules', fn () => $this->modules);
+        /** @var ConfigManager $config */
+        $config = $this->container->get('config');
+
+        return $config;
     }
 
     public function version(): string
     {
         return self::VERSION;
+    }
+
+    private function registerCoreServices(): void
+    {
+        $this->container->set('app', fn () => $this);
+
+        $this->container->set('modules', fn () => $this->modules);
+
+        $this->container->set('config', fn () => new ConfigManager([
+            'version' => self::VERSION,
+        ]));
     }
 }
