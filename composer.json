@@ -1,0 +1,10 @@
+{
+    "name": "capdigitalgestion/cdg-studio",
+    "description": "CDG Studio",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "CDGStudio\\": "app/"
+        }
+    }
+}
