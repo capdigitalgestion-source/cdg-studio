@@ -10,11 +10,36 @@ final class DashboardModule extends AbstractModule
 {
     public function register(): void
     {
-        // Enregistrement des services du module Dashboard.
+        $this->container->set(
+            'dashboard.service',
+            fn () => new DashboardService($this->container)
+        );
+
+        $this->container->set(
+            'dashboard.controller',
+            fn () => new DashboardController(
+                $this->container->get('dashboard.service')
+            )
+        );
     }
 
     public function boot(): void
     {
+        $this->hooks()->action('admin_menu', [$this, 'registerMenu']);
+
         $this->logger()->info('DashboardModule boot OK');
+    }
+
+    public function registerMenu(): void
+    {
+        add_menu_page(
+            'CDG Studio',
+            'CDG Studio',
+            'manage_options',
+            'cdg-studio',
+            [$this->container->get('dashboard.controller'), 'render'],
+            'dashicons-chart-area',
+            56
+        );
     }
 }
