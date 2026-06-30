@@ -18,6 +18,14 @@ final class ModuleLoader
         $this->modules[] = $module;
     }
 
+    /**
+     * @return ModuleInterface[]
+     */
+    public function all(): array
+    {
+        return $this->modules;
+    }
+
     public function register(): void
     {
         foreach ($this->modules as $module) {
