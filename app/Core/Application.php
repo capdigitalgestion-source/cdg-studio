@@ -50,14 +50,17 @@ final class Application
         return $this->config()->get('version', '0.0.0');
     }
 
-    private function registerProviders(): void
-    {
-        $providers = [
-            new CoreServiceProvider($this, $this->modules),
-        ];
+    protected function providers(): array
+{
+    return [
+        new CoreServiceProvider($this, $this->modules),
+    ];
+}
 
-        foreach ($providers as $provider) {
-            $provider->register($this->container);
-        }
+private function registerProviders(): void
+{
+    foreach ($this->providers() as $provider) {
+        $provider->register($this->container);
     }
+}
 }
