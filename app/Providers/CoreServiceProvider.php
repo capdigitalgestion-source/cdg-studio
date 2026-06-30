@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CDGStudio\Providers;
 
+use CDGStudio\Core\SettingsManager;
 use CDGStudio\Support\Cache;
 use CDGStudio\Contracts\ServiceProviderInterface;
 use CDGStudio\Core\Application;
@@ -24,6 +25,7 @@ final class CoreServiceProvider implements ServiceProviderInterface
 
     public function register(Container $container): void
     {
+        $container->set('settings', fn () => new SettingsManager());
         $container->set('cache', fn () => new Cache());
         $container->set('hooks', fn () => new HookManager());
         $container->set('app', fn () => $this->app);
