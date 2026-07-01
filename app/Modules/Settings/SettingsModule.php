@@ -8,27 +8,36 @@ use CDGStudio\Core\AbstractModule;
 
 final class SettingsModule extends AbstractModule
 {
-    /**
-     * Nom technique du module.
-     */
-    public function name(): string
-    {
-        return 'settings';
-    }
+    private const MENU_SLUG = 'cdg-studio';
 
-    /**
-     * Enregistrement des services du module.
-     */
     public function register(): void
     {
-        // Les services seront enregistrés ici.
     }
 
-    /**
-     * Initialisation du module.
-     */
     public function boot(): void
     {
-        // Les hooks WordPress seront ajoutés ici.
+        $this->hooks()->action('admin_menu', [$this, 'registerMenu']);
+
+        $this->logger()->info('SettingsModule boot OK');
+    }
+
+    public function registerMenu(): void
+    {
+        add_submenu_page(
+            self::MENU_SLUG,
+            'Réglages',
+            'Réglages',
+            'manage_options',
+            'cdg-studio-settings',
+            [$this, 'render']
+        );
+    }
+
+    public function render(): void
+    {
+        echo '<div class="wrap">';
+        echo '<h1>Réglages CDG Studio</h1>';
+        echo '<p>Module Settings chargé avec succès.</p>';
+        echo '</div>';
     }
 }
