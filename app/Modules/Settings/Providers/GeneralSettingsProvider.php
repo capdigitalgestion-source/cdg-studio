@@ -8,7 +8,7 @@ use CDGStudio\Contracts\SettingsProviderInterface;
 use CDGStudio\Modules\Settings\DTO\SettingsField;
 use CDGStudio\Modules\Settings\DTO\SettingsSection;
 use CDGStudio\Modules\Settings\SettingsRegistry;
-use CDGStudio\Modules\Settings\Providers\GeneralSettingsProvider;
+
 
 final class GeneralSettingsProvider implements SettingsProviderInterface
 {
