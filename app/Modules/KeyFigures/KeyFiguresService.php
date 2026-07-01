@@ -11,6 +11,11 @@ final class KeyFiguresService
     ) {
     }
 
+    public function install(): void
+    {
+        $this->repository->install();
+    }
+
     /**
      * @return array<int, array<string, mixed>>
      */
