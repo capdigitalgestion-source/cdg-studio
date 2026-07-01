@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace CDGStudio\Modules\KeyFigures\Controllers;
-
-use CDGStudio\Modules\KeyFigures\Services\KeyFiguresService;
+namespace CDGStudio\Modules\KeyFigures;
 
 final class KeyFiguresController
 {
-    public function __construct(
-        private readonly KeyFiguresService $service = new KeyFiguresService()
-    ) {
+    private KeyFiguresService $service;
+
+    public function __construct()
+    {
+        $this->service = new KeyFiguresService();
     }
 
     public function index(): void
@@ -23,7 +23,7 @@ final class KeyFiguresController
 
         $figures = $this->service->getAll();
 
-        require dirname(__DIR__) . '/Views/admin/index.php';
+        require __DIR__ . '/Views/index.php';
     }
 
     private function handleActions(): void
@@ -34,10 +34,10 @@ final class KeyFiguresController
 
         check_admin_referer('cdg_key_figures_action', 'cdg_key_figures_nonce');
 
-        $action = sanitize_text_field($_POST['cdg_action'] ?? '');
+        $action = sanitize_text_field(wp_unslash($_POST['cdg_action'] ?? ''));
 
         if ($action === 'create') {
-            $this->service->create($_POST);
+            $this->service->create(wp_unslash($_POST));
             $this->redirectWithMessage('created');
         }
 
@@ -45,7 +45,7 @@ final class KeyFiguresController
             $id = absint($_POST['id'] ?? 0);
 
             if ($id > 0) {
-                $this->service->update($id, $_POST);
+                $this->service->update($id, wp_unslash($_POST));
             }
 
             $this->redirectWithMessage('updated');
