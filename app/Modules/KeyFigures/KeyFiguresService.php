@@ -26,11 +26,23 @@ final class KeyFiguresService
 
     public function create(array $data): int
     {
+        $data = $this->sanitize($data);
+
+        if (! $this->isValid($data)) {
+            return 0;
+        }
+
         return $this->repository->create($data);
     }
 
     public function update(int $id, array $data): bool
     {
+        $data = $this->sanitize($data);
+
+        if (! $this->isValid($data)) {
+            return false;
+        }
+
         return $this->repository->update($id, $data);
     }
 
@@ -52,5 +64,28 @@ final class KeyFiguresService
     public function countHidden(): int
     {
         return $this->repository->countHidden();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function sanitize(array $data): array
+    {
+        return [
+            'label' => sanitize_text_field((string) ($data['label'] ?? '')),
+            'value' => sanitize_text_field((string) ($data['value'] ?? '')),
+            'suffix' => sanitize_text_field((string) ($data['suffix'] ?? '')),
+            'icon' => sanitize_text_field((string) ($data['icon'] ?? '')),
+            'color' => sanitize_hex_color((string) ($data['color'] ?? '')) ?: '',
+            'display_order' => absint($data['display_order'] ?? 0),
+            'is_visible' => ! empty($data['is_visible']),
+            'animation' => sanitize_text_field((string) ($data['animation'] ?? '')),
+        ];
+    }
+
+    private function isValid(array $data): bool
+    {
+        return $data['label'] !== ''
+            && $data['value'] !== '';
     }
 }
