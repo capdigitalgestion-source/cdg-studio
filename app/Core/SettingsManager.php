@@ -6,9 +6,11 @@ namespace CDGStudio\Core;
 
 final class SettingsManager
 {
-    public function __construct(
-        private readonly string $prefix = 'cdg_studio_'
-    ) {
+    private string $prefix;
+
+    public function __construct(string $prefix = 'cdg_studio_')
+    {
+        $this->prefix = $prefix;
     }
 
     public function get(string $key, mixed $default = null): mixed
@@ -18,7 +20,9 @@ final class SettingsManager
 
     public function set(string $key, mixed $value): bool
     {
-        return update_option($this->key($key), $value);
+        update_option($this->key($key), $value);
+
+        return true;
     }
 
     public function forget(string $key): bool
