@@ -10,7 +10,7 @@ final class KeyFiguresModule implements ModuleInterface
 {
     public function register(): void
     {
-        // Enregistrement des services du module si nécessaire.
+        add_action('admin_menu', [$this, 'registerAdminMenu']);
     }
 
     public function boot(): void
@@ -19,5 +19,23 @@ final class KeyFiguresModule implements ModuleInterface
 
         $repository->install();
         $repository->insertDemoDataIfNeeded();
+    }
+
+    public function registerAdminMenu(): void
+    {
+        add_submenu_page(
+            'cdg-studio',
+            'Key Figures',
+            'Key Figures',
+            'manage_options',
+            'cdg-studio-key-figures',
+            [$this, 'renderAdminPage']
+        );
+    }
+
+    public function renderAdminPage(): void
+    {
+        $controller = new KeyFiguresController();
+        $controller->index();
     }
 }
