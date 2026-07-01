@@ -11,6 +11,7 @@ final class KeyFiguresModule implements ModuleInterface
     public function register(): void
     {
         add_action('admin_menu', [$this, 'registerAdminMenu']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
     }
 
     public function boot(): void
@@ -30,6 +31,20 @@ final class KeyFiguresModule implements ModuleInterface
             'manage_options',
             'cdg-studio-key-figures',
             [$this, 'renderAdminPage']
+        );
+    }
+
+    public function enqueueAdminAssets(string $hook): void
+    {
+        if ($hook !== 'cdg-studio_page_cdg-studio-key-figures') {
+            return;
+        }
+
+        wp_enqueue_style(
+            'cdg-key-figures-admin',
+            plugins_url('assets/admin.css', __FILE__),
+            [],
+            '1.0.0'
         );
     }
 

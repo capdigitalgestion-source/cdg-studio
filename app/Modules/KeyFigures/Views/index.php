@@ -9,8 +9,21 @@ if (!defined('ABSPATH')) {
 $message = sanitize_text_field($_GET['message'] ?? '');
 ?>
 
-<div class="wrap">
-    <h1>Key Figures</h1>
+<div class="wrap cdg-key-figures-admin">
+    <div class="cdg-kf-header">
+        <div>
+            <p class="cdg-kf-eyebrow">CDG Studio</p>
+            <h1>Key Figures</h1>
+            <p class="cdg-kf-subtitle">
+                Gérez les chiffres clés affichés par le module.
+            </p>
+        </div>
+
+        <div class="cdg-kf-count">
+            <span><?php echo esc_html((string) count($figures)); ?></span>
+            <small>élément(s)</small>
+        </div>
+    </div>
 
     <?php if ($message === 'created') : ?>
         <div class="notice notice-success is-dismissible"><p>Chiffre clé ajouté.</p></div>
@@ -20,93 +33,141 @@ $message = sanitize_text_field($_GET['message'] ?? '');
         <div class="notice notice-success is-dismissible"><p>Chiffre clé supprimé.</p></div>
     <?php endif; ?>
 
-    <h2>Ajouter un chiffre clé</h2>
+    <div class="cdg-kf-layout">
+        <section class="cdg-kf-panel cdg-kf-panel-form">
+            <h2>Ajouter un chiffre clé</h2>
+            <p class="cdg-kf-help">
+                Créez une nouvelle donnée métier : valeur, unité, description et ordre d’affichage.
+            </p>
 
-    <form method="post">
-        <?php wp_nonce_field('cdg_key_figures_action', 'cdg_key_figures_nonce'); ?>
-        <input type="hidden" name="cdg_action" value="create">
+            <form method="post" class="cdg-kf-form">
+                <?php wp_nonce_field('cdg_key_figures_action', 'cdg_key_figures_nonce'); ?>
+                <input type="hidden" name="cdg_action" value="create">
 
-        <table class="form-table" role="presentation">
-            <tr>
-                <th><label for="title">Titre</label></th>
-                <td><input name="title" id="title" type="text" class="regular-text" required></td>
-            </tr>
-            <tr>
-                <th><label for="value">Valeur</label></th>
-                <td><input name="value" id="value" type="text" class="regular-text" required></td>
-            </tr>
-            <tr>
-                <th><label for="unit">Unité</label></th>
-                <td><input name="unit" id="unit" type="text" class="regular-text"></td>
-            </tr>
-            <tr>
-                <th><label for="description">Description</label></th>
-                <td><textarea name="description" id="description" class="large-text" rows="3"></textarea></td>
-            </tr>
-            <tr>
-                <th><label for="position">Position</label></th>
-                <td><input name="position" id="position" type="number" min="0" value="0"></td>
-            </tr>
-            <tr>
-                <th>Actif</th>
-                <td><label><input name="is_active" type="checkbox" value="1" checked> Afficher</label></td>
-            </tr>
-        </table>
+                <div class="cdg-kf-grid">
+                    <label>
+                        <span>Titre</span>
+                        <input name="title" type="text" required>
+                    </label>
 
-        <?php submit_button('Ajouter'); ?>
-    </form>
+                    <label>
+                        <span>Valeur</span>
+                        <input name="value" type="text" required>
+                    </label>
 
-    <hr>
+                    <label>
+                        <span>Unité</span>
+                        <input name="unit" type="text" placeholder="+, %, €, jours...">
+                    </label>
 
-    <h2>Chiffres clés enregistrés</h2>
+                    <label>
+                        <span>Position</span>
+                        <input name="position" type="number" min="0" value="0">
+                    </label>
+                </div>
 
-    <table class="widefat striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Titre</th>
-                <th>Valeur</th>
-                <th>Unité</th>
-                <th>Description</th>
-                <th>Position</th>
-                <th>Actif</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php if (empty($figures)) : ?>
-            <tr>
-                <td colspan="8">Aucun chiffre clé enregistré.</td>
-            </tr>
-        <?php else : ?>
-            <?php foreach ($figures as $figure) : ?>
-                <tr>
-                    <form method="post">
-                        <?php wp_nonce_field('cdg_key_figures_action', 'cdg_key_figures_nonce'); ?>
-                        <input type="hidden" name="id" value="<?php echo esc_attr((string) $figure['id']); ?>">
+                <label class="cdg-kf-full">
+                    <span>Description</span>
+                    <textarea name="description" rows="3"></textarea>
+                </label>
 
-                        <td><?php echo esc_html((string) $figure['id']); ?></td>
-                        <td><input name="title" type="text" value="<?php echo esc_attr($figure['title']); ?>" required></td>
-                        <td><input name="value" type="text" value="<?php echo esc_attr($figure['value']); ?>" required></td>
-                        <td><input name="unit" type="text" value="<?php echo esc_attr($figure['unit'] ?? ''); ?>"></td>
-                        <td><textarea name="description" rows="2"><?php echo esc_textarea($figure['description'] ?? ''); ?></textarea></td>
-                        <td><input name="position" type="number" min="0" value="<?php echo esc_attr((string) $figure['position']); ?>"></td>
-                        <td>
-                            <input name="is_active" type="checkbox" value="1" <?php checked((int) $figure['is_active'], 1); ?>>
-                        </td>
-                        <td>
-                            <button type="submit" name="cdg_action" value="update" class="button button-primary">
-                                Enregistrer
-                            </button>
+                <label class="cdg-kf-checkbox">
+                    <input name="is_active" type="checkbox" value="1" checked>
+                    <span>Afficher ce chiffre clé</span>
+                </label>
 
-                            <button type="submit" name="cdg_action" value="delete" class="button button-link-delete" onclick="return confirm('Supprimer ce chiffre clé ?');">
-                                Supprimer
-                            </button>
-                        </td>
-                    </form>
-                </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        </tbody>
-    </table>
+                <button type="submit" class="button button-primary cdg-kf-primary">
+                    Ajouter
+                </button>
+            </form>
+        </section>
+
+        <section class="cdg-kf-panel">
+            <div class="cdg-kf-section-title">
+                <div>
+                    <h2>Chiffres clés enregistrés</h2>
+                    <p class="cdg-kf-help">
+                        Modifiez, activez, désactivez ou supprimez les éléments existants.
+                    </p>
+                </div>
+            </div>
+
+            <?php if (empty($figures)) : ?>
+                <div class="cdg-kf-empty">
+                    Aucun chiffre clé enregistré.
+                </div>
+            <?php else : ?>
+                <div class="cdg-kf-cards">
+                    <?php foreach ($figures as $figure) : ?>
+                        <form method="post" class="cdg-kf-card">
+                            <?php wp_nonce_field('cdg_key_figures_action', 'cdg_key_figures_nonce'); ?>
+
+                            <input type="hidden" name="id" value="<?php echo esc_attr((string) $figure['id']); ?>">
+
+                            <div class="cdg-kf-card-top">
+                                <div>
+                                    <span class="cdg-kf-id">#<?php echo esc_html((string) $figure['id']); ?></span>
+                                    <?php if ((int) $figure['is_active'] === 1) : ?>
+                                        <span class="cdg-kf-badge is-active">Actif</span>
+                                    <?php else : ?>
+                                        <span class="cdg-kf-badge is-inactive">Inactif</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="cdg-kf-grid">
+                                <label>
+                                    <span>Titre</span>
+                                    <input name="title" type="text" value="<?php echo esc_attr($figure['title']); ?>" required>
+                                </label>
+
+                                <label>
+                                    <span>Valeur</span>
+                                    <input name="value" type="text" value="<?php echo esc_attr($figure['value']); ?>" required>
+                                </label>
+
+                                <label>
+                                    <span>Unité</span>
+                                    <input name="unit" type="text" value="<?php echo esc_attr($figure['unit'] ?? ''); ?>">
+                                </label>
+
+                                <label>
+                                    <span>Position</span>
+                                    <input name="position" type="number" min="0" value="<?php echo esc_attr((string) $figure['position']); ?>">
+                                </label>
+                            </div>
+
+                            <label class="cdg-kf-full">
+                                <span>Description</span>
+                                <textarea name="description" rows="3"><?php echo esc_textarea($figure['description'] ?? ''); ?></textarea>
+                            </label>
+
+                            <div class="cdg-kf-card-actions">
+                                <label class="cdg-kf-checkbox">
+                                    <input name="is_active" type="checkbox" value="1" <?php checked((int) $figure['is_active'], 1); ?>>
+                                    <span>Afficher</span>
+                                </label>
+
+                                <div>
+                                    <button type="submit" name="cdg_action" value="update" class="button button-primary">
+                                        Enregistrer
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        name="cdg_action"
+                                        value="delete"
+                                        class="button button-link-delete"
+                                        onclick="return confirm('Supprimer ce chiffre clé ?');"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    </div>
 </div>
