@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CDGStudio\Core;
 
 use CDGStudio\Modules\Dashboard\DashboardModule;
+use CDGStudio\Modules\Settings\SettingsModule;
 
 final class ModuleRegistry
 {
@@ -17,6 +18,7 @@ final class ModuleRegistry
     {
         return [
             DashboardModule::class,
+            SettingsModule::class,
         ];
     }
 }
