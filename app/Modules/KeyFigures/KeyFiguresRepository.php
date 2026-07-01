@@ -14,6 +14,32 @@ final class KeyFiguresRepository
         return $this->fakeData();
     }
 
+    public function findById(int $id): ?array
+    {
+        foreach ($this->fakeData() as $figure) {
+            if ((int) $figure['id'] === $id) {
+                return $figure;
+            }
+        }
+
+        return null;
+    }
+
+    public function create(array $data): int
+    {
+        return 0;
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        return false;
+    }
+
+    public function delete(int $id): bool
+    {
+        return false;
+    }
+
     public function countAll(): int
     {
         return count($this->findAll());
