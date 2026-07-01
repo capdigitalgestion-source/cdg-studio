@@ -35,20 +35,20 @@ final class KeyFiguresModule implements ModuleInterface
     }
 
     public function enqueueAdminAssets(): void
-    {
-        $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+{
+    $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
 
-        if ($page !== 'cdg-studio-key-figures') {
-            return;
-        }
-
-        wp_enqueue_style(
-            'cdg-key-figures-admin',
-            plugins_url('assets/admin.css', __FILE__),
-            [],
-            '1.2.0'
-        );
+    if ($page !== 'cdg-studio-key-figures') {
+        return;
     }
+
+    wp_enqueue_style(
+        'cdg-key-figures-admin',
+        plugin_dir_url(__FILE__) . 'assets/admin.css',
+        [],
+        (string) time()
+    );
+}
 
     public function renderAdminPage(): void
     {
