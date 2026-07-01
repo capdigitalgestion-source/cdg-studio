@@ -12,30 +12,25 @@ final class KeyFiguresService
     }
 
     /**
-     * Retourne les chiffres clés préparés pour l’affichage.
-     *
      * @return array<int, array<string, mixed>>
      */
     public function getAll(): array
     {
-        return $this->repository->all();
+        return $this->repository->findAll();
     }
 
     public function countAll(): int
     {
-        return count($this->getAll());
+        return $this->repository->countAll();
     }
 
     public function countVisible(): int
     {
-        return count(array_filter(
-            $this->getAll(),
-            static fn (array $figure): bool => (bool) ($figure['visible'] ?? false)
-        ));
+        return $this->repository->countVisible();
     }
 
     public function countHidden(): int
     {
-        return $this->countAll() - $this->countVisible();
+        return $this->repository->countHidden();
     }
 }
