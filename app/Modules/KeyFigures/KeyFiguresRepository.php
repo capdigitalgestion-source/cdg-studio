@@ -18,6 +18,31 @@ final class KeyFiguresRepository
         return $this->database->prefix . 'cdg_studio_key_figures';
     }
 
+    public function install(): void
+    {
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        $tableName = $this->tableName();
+        $charsetCollate = $this->database->get_charset_collate();
+
+        $sql = "CREATE TABLE {$tableName} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            label VARCHAR(191) NOT NULL,
+            value VARCHAR(100) NOT NULL,
+            suffix VARCHAR(50) DEFAULT '',
+            icon VARCHAR(100) DEFAULT '',
+            color VARCHAR(20) DEFAULT '',
+            display_order INT UNSIGNED DEFAULT 0,
+            is_visible TINYINT(1) DEFAULT 1,
+            animation VARCHAR(100) DEFAULT '',
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NULL,
+            PRIMARY KEY  (id)
+        ) {$charsetCollate};";
+
+        dbDelta($sql);
+    }
+
     /**
      * @return array<int, array<string, mixed>>
      */
