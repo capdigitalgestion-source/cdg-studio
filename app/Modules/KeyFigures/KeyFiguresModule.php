@@ -8,18 +8,49 @@ use CDGStudio\Core\AbstractModule;
 
 final class KeyFiguresModule extends AbstractModule
 {
-    public function name(): string
-    {
-        return 'key_figures';
-    }
+    private const MENU_SLUG = 'cdg-studio';
 
     public function register(): void
     {
-        // Enregistrement des services du module KeyFigures.
+        $this->container->set(
+            'keyfigures.repository',
+            fn () => new KeyFiguresRepository()
+        );
+
+        $this->container->set(
+            'keyfigures.service',
+            fn () => new KeyFiguresService(
+                $this->container->get('keyfigures.repository')
+            )
+        );
+
+        $this->container->set(
+            'keyfigures.controller',
+            fn () => new KeyFiguresController(
+                $this->container->get('keyfigures.service')
+            )
+        );
     }
 
     public function boot(): void
     {
-        // Initialisation du module KeyFigures.
+        $this->hooks()->action('admin_menu', [$this, 'registerMenu']);
+
+        $this->logger()->info('KeyFiguresModule boot OK');
+    }
+
+    public function registerMenu(): void
+    {
+        /** @var KeyFiguresController $controller */
+        $controller = $this->container->get('keyfigures.controller');
+
+        add_submenu_page(
+            self::MENU_SLUG,
+            'Chiffres clés',
+            'Chiffres clés',
+            'manage_options',
+            'cdg-studio-key-figures',
+            [$controller, 'render']
+        );
     }
 }
