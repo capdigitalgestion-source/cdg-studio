@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CDGStudio\Modules\KeyFigures\Repositories;
+namespace CDGStudio\Modules\KeyFigures;
 
 final class KeyFiguresRepository
 {
@@ -54,7 +54,7 @@ final class KeyFiguresRepository
             'title' => 'Clients accompagnés',
             'value' => '120',
             'unit' => '+',
-            'description' => 'Exemple de donnée de démonstration.',
+            'description' => 'Donnée de démonstration.',
             'position' => 1,
             'is_active' => 1,
         ]);
@@ -63,7 +63,7 @@ final class KeyFiguresRepository
             'title' => 'Projets digitalisation',
             'value' => '45',
             'unit' => '+',
-            'description' => 'Exemple de donnée de démonstration.',
+            'description' => 'Donnée de démonstration.',
             'position' => 2,
             'is_active' => 1,
         ]);
@@ -72,7 +72,7 @@ final class KeyFiguresRepository
             'title' => 'Années d’expérience',
             'value' => '8',
             'unit' => '+',
-            'description' => 'Exemple de donnée de démonstration.',
+            'description' => 'Donnée de démonstration.',
             'position' => 3,
             'is_active' => 1,
         ]);
@@ -84,20 +84,24 @@ final class KeyFiguresRepository
     {
         global $wpdb;
 
-        return $wpdb->get_results(
+        $results = $wpdb->get_results(
             "SELECT * FROM {$this->tableName} ORDER BY position ASC, id ASC",
             ARRAY_A
-        ) ?: [];
+        );
+
+        return is_array($results) ? $results : [];
     }
 
     public function active(): array
     {
         global $wpdb;
 
-        return $wpdb->get_results(
+        $results = $wpdb->get_results(
             "SELECT * FROM {$this->tableName} WHERE is_active = 1 ORDER BY position ASC, id ASC",
             ARRAY_A
-        ) ?: [];
+        );
+
+        return is_array($results) ? $results : [];
     }
 
     public function find(int $id): ?array
@@ -112,7 +116,7 @@ final class KeyFiguresRepository
             ARRAY_A
         );
 
-        return $result ?: null;
+        return is_array($result) ? $result : null;
     }
 
     public function create(array $data): int
@@ -164,11 +168,13 @@ final class KeyFiguresRepository
     {
         global $wpdb;
 
-        return $wpdb->delete(
+        $deleted = $wpdb->delete(
             $this->tableName,
             ['id' => $id],
             ['%d']
-        ) !== false;
+        );
+
+        return $deleted !== false;
     }
 
     public function count(): int
