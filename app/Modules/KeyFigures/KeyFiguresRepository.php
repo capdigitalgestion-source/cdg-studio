@@ -2,152 +2,179 @@
 
 declare(strict_types=1);
 
-namespace CDGStudio\Modules\KeyFigures;
-
-use wpdb;
+namespace CDGStudio\Modules\KeyFigures\Repositories;
 
 final class KeyFiguresRepository
 {
-    public function __construct(
-        private readonly wpdb $database
-    ) {
-    }
+    private string $tableName;
 
-    public function tableName(): string
+    public function __construct()
     {
-        return $this->database->prefix . 'cdg_studio_key_figures';
-    }
+        global $wpdb;
 
-    public function tableExists(): bool
-    {
-        $tableName = $this->tableName();
-
-        $result = $this->database->get_var(
-            $this->database->prepare(
-                'SHOW TABLES LIKE %s',
-                $tableName
-            )
-        );
-
-        return $result === $tableName;
+        $this->tableName = $wpdb->prefix . 'cdg_key_figures';
     }
 
     public function install(): void
     {
+        global $wpdb;
+
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        $tableName = $this->tableName();
-        $charsetCollate = $this->database->get_charset_collate();
+        $charsetCollate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE {$tableName} (
+        $sql = "CREATE TABLE {$this->tableName} (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-            label VARCHAR(191) NOT NULL,
+            title VARCHAR(190) NOT NULL,
             value VARCHAR(100) NOT NULL,
-            suffix VARCHAR(50) DEFAULT '',
-            icon VARCHAR(100) DEFAULT '',
-            color VARCHAR(20) DEFAULT '',
-            display_order INT UNSIGNED DEFAULT 0,
-            is_visible TINYINT(1) DEFAULT 1,
-            animation VARCHAR(100) DEFAULT '',
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME NULL,
-            PRIMARY KEY  (id)
+            unit VARCHAR(50) NULL,
+            description TEXT NULL,
+            position INT UNSIGNED NOT NULL DEFAULT 0,
+            is_active TINYINT(1) NOT NULL DEFAULT 1,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NULL DEFAULT NULL,
+            PRIMARY KEY (id)
         ) {$charsetCollate};";
 
         dbDelta($sql);
     }
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    public function findAll(): array
+    public function insertDemoDataIfNeeded(): void
     {
-        return $this->fakeData();
-    }
-
-    public function findById(int $id): ?array
-    {
-        foreach ($this->fakeData() as $figure) {
-            if ((int) $figure['id'] === $id) {
-                return $figure;
-            }
+        if (get_option('cdg_key_figures_demo_inserted') === 'yes') {
+            return;
         }
 
-        return null;
+        if ($this->count() > 0) {
+            update_option('cdg_key_figures_demo_inserted', 'yes');
+            return;
+        }
+
+        $this->create([
+            'title' => 'Clients accompagnés',
+            'value' => '120',
+            'unit' => '+',
+            'description' => 'Exemple de donnée de démonstration.',
+            'position' => 1,
+            'is_active' => 1,
+        ]);
+
+        $this->create([
+            'title' => 'Projets digitalisation',
+            'value' => '45',
+            'unit' => '+',
+            'description' => 'Exemple de donnée de démonstration.',
+            'position' => 2,
+            'is_active' => 1,
+        ]);
+
+        $this->create([
+            'title' => 'Années d’expérience',
+            'value' => '8',
+            'unit' => '+',
+            'description' => 'Exemple de donnée de démonstration.',
+            'position' => 3,
+            'is_active' => 1,
+        ]);
+
+        update_option('cdg_key_figures_demo_inserted', 'yes');
+    }
+
+    public function all(): array
+    {
+        global $wpdb;
+
+        return $wpdb->get_results(
+            "SELECT * FROM {$this->tableName} ORDER BY position ASC, id ASC",
+            ARRAY_A
+        ) ?: [];
+    }
+
+    public function active(): array
+    {
+        global $wpdb;
+
+        return $wpdb->get_results(
+            "SELECT * FROM {$this->tableName} WHERE is_active = 1 ORDER BY position ASC, id ASC",
+            ARRAY_A
+        ) ?: [];
+    }
+
+    public function find(int $id): ?array
+    {
+        global $wpdb;
+
+        $result = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->tableName} WHERE id = %d",
+                $id
+            ),
+            ARRAY_A
+        );
+
+        return $result ?: null;
     }
 
     public function create(array $data): int
     {
-        return 0;
+        global $wpdb;
+
+        $wpdb->insert(
+            $this->tableName,
+            [
+                'title' => sanitize_text_field($data['title'] ?? ''),
+                'value' => sanitize_text_field($data['value'] ?? ''),
+                'unit' => sanitize_text_field($data['unit'] ?? ''),
+                'description' => sanitize_textarea_field($data['description'] ?? ''),
+                'position' => absint($data['position'] ?? 0),
+                'is_active' => !empty($data['is_active']) ? 1 : 0,
+                'created_at' => current_time('mysql'),
+                'updated_at' => current_time('mysql'),
+            ],
+            ['%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s']
+        );
+
+        return (int) $wpdb->insert_id;
     }
 
     public function update(int $id, array $data): bool
     {
-        return false;
+        global $wpdb;
+
+        $updated = $wpdb->update(
+            $this->tableName,
+            [
+                'title' => sanitize_text_field($data['title'] ?? ''),
+                'value' => sanitize_text_field($data['value'] ?? ''),
+                'unit' => sanitize_text_field($data['unit'] ?? ''),
+                'description' => sanitize_textarea_field($data['description'] ?? ''),
+                'position' => absint($data['position'] ?? 0),
+                'is_active' => !empty($data['is_active']) ? 1 : 0,
+                'updated_at' => current_time('mysql'),
+            ],
+            ['id' => $id],
+            ['%s', '%s', '%s', '%s', '%d', '%d', '%s'],
+            ['%d']
+        );
+
+        return $updated !== false;
     }
 
     public function delete(int $id): bool
     {
-        return false;
+        global $wpdb;
+
+        return $wpdb->delete(
+            $this->tableName,
+            ['id' => $id],
+            ['%d']
+        ) !== false;
     }
 
-    public function countAll(): int
+    public function count(): int
     {
-        return count($this->findAll());
-    }
+        global $wpdb;
 
-    public function countVisible(): int
-    {
-        return count(array_filter(
-            $this->findAll(),
-            static fn (array $figure): bool => (bool) ($figure['is_visible'] ?? false)
-        ));
-    }
-
-    public function countHidden(): int
-    {
-        return $this->countAll() - $this->countVisible();
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function fakeData(): array
-    {
-        return [
-            [
-                'id' => 1,
-                'label' => 'Clients accompagnés',
-                'value' => '24',
-                'suffix' => '+',
-                'icon' => 'dashicons-groups',
-                'color' => '#002C73',
-                'display_order' => 1,
-                'is_visible' => true,
-                'animation' => 'count-up',
-            ],
-            [
-                'id' => 2,
-                'label' => 'Diagnostics réalisés',
-                'value' => '42',
-                'suffix' => '',
-                'icon' => 'dashicons-chart-bar',
-                'color' => '#0094AA',
-                'display_order' => 2,
-                'is_visible' => true,
-                'animation' => 'count-up',
-            ],
-            [
-                'id' => 3,
-                'label' => 'Gain de temps estimé',
-                'value' => '30',
-                'suffix' => '%',
-                'icon' => 'dashicons-clock',
-                'color' => '#00ADBD',
-                'display_order' => 3,
-                'is_visible' => true,
-                'animation' => 'count-up',
-            ],
-        ];
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tableName}");
     }
 }
