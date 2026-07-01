@@ -6,7 +6,7 @@ namespace CDGStudio\Core;
 
 use CDGStudio\Modules\Dashboard\DashboardModule;
 use CDGStudio\Modules\KeyFigures\KeyFiguresModule;
-
+use CDGStudio\Modules\Settings\SettingsModule;
 final class ModuleRegistry
 {
     /**Z
