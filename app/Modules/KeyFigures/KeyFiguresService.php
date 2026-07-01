@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace CDGStudio\Modules\KeyFigures\Services;
-
-use CDGStudio\Modules\KeyFigures\Repositories\KeyFiguresRepository;
+namespace CDGStudio\Modules\KeyFigures;
 
 final class KeyFiguresService
 {
-    public function __construct(
-        private readonly KeyFiguresRepository $repository = new KeyFiguresRepository()
-    ) {
+    private KeyFiguresRepository $repository;
+
+    public function __construct()
+    {
+        $this->repository = new KeyFiguresRepository();
     }
 
     public function getAll(): array
