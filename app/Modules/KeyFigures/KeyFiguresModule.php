@@ -39,6 +39,16 @@ final class KeyFiguresModule extends AbstractModule
         $this->logger()->info('KeyFiguresModule boot OK');
     }
 
+    public function install(): void
+    {
+        /** @var KeyFiguresService $service */
+        $service = $this->container->get('keyfigures.service');
+
+        $service->install();
+
+        $this->logger()->info('KeyFiguresModule install OK');
+    }
+
     public function registerMenu(): void
     {
         /** @var KeyFiguresController $controller */
