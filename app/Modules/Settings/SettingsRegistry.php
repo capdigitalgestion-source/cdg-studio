@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CDGStudio\Modules\Settings;
 
+use CDGStudio\Contracts\SettingsProviderInterface;
 use CDGStudio\Modules\Settings\DTO\SettingsField;
 use CDGStudio\Modules\Settings\DTO\SettingsSection;
 
@@ -18,6 +19,23 @@ final class SettingsRegistry
      * @var array<string, SettingsField>
      */
     private array $fields = [];
+
+    /**
+     * @var list<SettingsProviderInterface>
+     */
+    private array $providers = [];
+
+    public function addProvider(SettingsProviderInterface $provider): void
+    {
+        $this->providers[] = $provider;
+    }
+
+    public function boot(): void
+    {
+        foreach ($this->providers as $provider) {
+            $provider->register($this);
+        }
+    }
 
     public function addSection(SettingsSection $section): void
     {
