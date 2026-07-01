@@ -9,19 +9,17 @@ if (!defined('ABSPATH')) {
 $message = sanitize_text_field($_GET['message'] ?? '');
 ?>
 
-<div class="wrap cdg-key-figures-admin">
-    <div class="cdg-kf-header">
+<div class="wrap cdg-kf-admin">
+    <div class="cdg-kf-hero">
         <div>
-            <p class="cdg-kf-eyebrow">CDG Studio</p>
+            <span class="cdg-kf-label">CDG Studio</span>
             <h1>Key Figures</h1>
-            <p class="cdg-kf-subtitle">
-                Gérez les chiffres clés affichés par le module.
-            </p>
+            <p>Gérez les chiffres clés, icônes et indicateurs affichés dans vos interfaces.</p>
         </div>
 
-        <div class="cdg-kf-count">
-            <span><?php echo esc_html((string) count($figures)); ?></span>
-            <small>élément(s)</small>
+        <div class="cdg-kf-hero-stat">
+            <strong><?php echo esc_html((string) count($figures)); ?></strong>
+            <span>chiffre(s)</span>
         </div>
     </div>
 
@@ -34,17 +32,24 @@ $message = sanitize_text_field($_GET['message'] ?? '');
     <?php endif; ?>
 
     <div class="cdg-kf-layout">
-        <section class="cdg-kf-panel cdg-kf-panel-form">
-            <h2>Ajouter un chiffre clé</h2>
-            <p class="cdg-kf-help">
-                Créez une nouvelle donnée métier : valeur, unité, description et ordre d’affichage.
-            </p>
+        <section class="cdg-kf-panel">
+            <div class="cdg-kf-panel-header">
+                <div>
+                    <h2>Ajouter un chiffre clé</h2>
+                    <p>Ajoutez un indicateur avec son icône, sa valeur et son ordre d’affichage.</p>
+                </div>
+            </div>
 
             <form method="post" class="cdg-kf-form">
                 <?php wp_nonce_field('cdg_key_figures_action', 'cdg_key_figures_nonce'); ?>
                 <input type="hidden" name="cdg_action" value="create">
 
-                <div class="cdg-kf-grid">
+                <div class="cdg-kf-form-grid">
+                    <label>
+                        <span>Icône</span>
+                        <input name="icon" type="text" placeholder="📊">
+                    </label>
+
                     <label>
                         <span>Titre</span>
                         <input name="title" type="text" required>
@@ -57,7 +62,7 @@ $message = sanitize_text_field($_GET['message'] ?? '');
 
                     <label>
                         <span>Unité</span>
-                        <input name="unit" type="text" placeholder="+, %, €, jours...">
+                        <input name="unit" type="text" placeholder="+, %, €, jours">
                     </label>
 
                     <label>
@@ -66,29 +71,29 @@ $message = sanitize_text_field($_GET['message'] ?? '');
                     </label>
                 </div>
 
-                <label class="cdg-kf-full">
+                <label class="cdg-kf-textarea">
                     <span>Description</span>
                     <textarea name="description" rows="3"></textarea>
                 </label>
 
-                <label class="cdg-kf-checkbox">
-                    <input name="is_active" type="checkbox" value="1" checked>
-                    <span>Afficher ce chiffre clé</span>
-                </label>
+                <div class="cdg-kf-form-footer">
+                    <label class="cdg-kf-toggle">
+                        <input name="is_active" type="checkbox" value="1" checked>
+                        <span>Afficher ce chiffre clé</span>
+                    </label>
 
-                <button type="submit" class="button button-primary cdg-kf-primary">
-                    Ajouter
-                </button>
+                    <button type="submit" class="button button-primary cdg-kf-button-primary">
+                        Ajouter
+                    </button>
+                </div>
             </form>
         </section>
 
         <section class="cdg-kf-panel">
-            <div class="cdg-kf-section-title">
+            <div class="cdg-kf-panel-header">
                 <div>
                     <h2>Chiffres clés enregistrés</h2>
-                    <p class="cdg-kf-help">
-                        Modifiez, activez, désactivez ou supprimez les éléments existants.
-                    </p>
+                    <p>Chaque chiffre est présenté sous forme de carte éditable.</p>
                 </div>
             </div>
 
@@ -101,21 +106,36 @@ $message = sanitize_text_field($_GET['message'] ?? '');
                     <?php foreach ($figures as $figure) : ?>
                         <form method="post" class="cdg-kf-card">
                             <?php wp_nonce_field('cdg_key_figures_action', 'cdg_key_figures_nonce'); ?>
-
                             <input type="hidden" name="id" value="<?php echo esc_attr((string) $figure['id']); ?>">
 
-                            <div class="cdg-kf-card-top">
+                            <div class="cdg-kf-card-preview">
+                                <div class="cdg-kf-icon">
+                                    <?php echo esc_html($figure['icon'] ?? '📊'); ?>
+                                </div>
+
                                 <div>
-                                    <span class="cdg-kf-id">#<?php echo esc_html((string) $figure['id']); ?></span>
-                                    <?php if ((int) $figure['is_active'] === 1) : ?>
-                                        <span class="cdg-kf-badge is-active">Actif</span>
-                                    <?php else : ?>
-                                        <span class="cdg-kf-badge is-inactive">Inactif</span>
-                                    <?php endif; ?>
+                                    <div class="cdg-kf-value">
+                                        <?php echo esc_html($figure['value']); ?><span><?php echo esc_html($figure['unit'] ?? ''); ?></span>
+                                    </div>
+                                    <div class="cdg-kf-title">
+                                        <?php echo esc_html($figure['title']); ?>
+                                    </div>
+                                    <div class="cdg-kf-description">
+                                        <?php echo esc_html($figure['description'] ?? ''); ?>
+                                    </div>
+                                </div>
+
+                                <div class="cdg-kf-status <?php echo ((int) $figure['is_active'] === 1) ? 'is-active' : 'is-inactive'; ?>">
+                                    <?php echo ((int) $figure['is_active'] === 1) ? 'Actif' : 'Inactif'; ?>
                                 </div>
                             </div>
 
-                            <div class="cdg-kf-grid">
+                            <div class="cdg-kf-edit-grid">
+                                <label>
+                                    <span>Icône</span>
+                                    <input name="icon" type="text" value="<?php echo esc_attr($figure['icon'] ?? ''); ?>">
+                                </label>
+
                                 <label>
                                     <span>Titre</span>
                                     <input name="title" type="text" value="<?php echo esc_attr($figure['title']); ?>" required>
@@ -137,18 +157,18 @@ $message = sanitize_text_field($_GET['message'] ?? '');
                                 </label>
                             </div>
 
-                            <label class="cdg-kf-full">
+                            <label class="cdg-kf-textarea">
                                 <span>Description</span>
                                 <textarea name="description" rows="3"><?php echo esc_textarea($figure['description'] ?? ''); ?></textarea>
                             </label>
 
-                            <div class="cdg-kf-card-actions">
-                                <label class="cdg-kf-checkbox">
+                            <div class="cdg-kf-card-footer">
+                                <label class="cdg-kf-toggle">
                                     <input name="is_active" type="checkbox" value="1" <?php checked((int) $figure['is_active'], 1); ?>>
                                     <span>Afficher</span>
                                 </label>
 
-                                <div>
+                                <div class="cdg-kf-actions">
                                     <button type="submit" name="cdg_action" value="update" class="button button-primary">
                                         Enregistrer
                                     </button>

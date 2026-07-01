@@ -25,6 +25,7 @@ final class KeyFiguresRepository
 
         $sql = "CREATE TABLE {$this->tableName} (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            icon VARCHAR(50) NULL,
             title VARCHAR(190) NOT NULL,
             value VARCHAR(100) NOT NULL,
             unit VARCHAR(50) NULL,
@@ -51,6 +52,7 @@ final class KeyFiguresRepository
         }
 
         $this->create([
+            'icon' => '👥',
             'title' => 'Clients accompagnés',
             'value' => '120',
             'unit' => '+',
@@ -60,6 +62,7 @@ final class KeyFiguresRepository
         ]);
 
         $this->create([
+            'icon' => '🚀',
             'title' => 'Projets digitalisation',
             'value' => '45',
             'unit' => '+',
@@ -69,6 +72,7 @@ final class KeyFiguresRepository
         ]);
 
         $this->create([
+            'icon' => '📊',
             'title' => 'Années d’expérience',
             'value' => '8',
             'unit' => '+',
@@ -126,6 +130,7 @@ final class KeyFiguresRepository
         $wpdb->insert(
             $this->tableName,
             [
+                'icon' => sanitize_text_field($data['icon'] ?? ''),
                 'title' => sanitize_text_field($data['title'] ?? ''),
                 'value' => sanitize_text_field($data['value'] ?? ''),
                 'unit' => sanitize_text_field($data['unit'] ?? ''),
@@ -135,7 +140,7 @@ final class KeyFiguresRepository
                 'created_at' => current_time('mysql'),
                 'updated_at' => current_time('mysql'),
             ],
-            ['%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s']
+            ['%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s']
         );
 
         return (int) $wpdb->insert_id;
@@ -148,6 +153,7 @@ final class KeyFiguresRepository
         $updated = $wpdb->update(
             $this->tableName,
             [
+                'icon' => sanitize_text_field($data['icon'] ?? ''),
                 'title' => sanitize_text_field($data['title'] ?? ''),
                 'value' => sanitize_text_field($data['value'] ?? ''),
                 'unit' => sanitize_text_field($data['unit'] ?? ''),
@@ -157,7 +163,7 @@ final class KeyFiguresRepository
                 'updated_at' => current_time('mysql'),
             ],
             ['id' => $id],
-            ['%s', '%s', '%s', '%s', '%d', '%d', '%s'],
+            ['%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s'],
             ['%d']
         );
 
@@ -168,13 +174,11 @@ final class KeyFiguresRepository
     {
         global $wpdb;
 
-        $deleted = $wpdb->delete(
+        return $wpdb->delete(
             $this->tableName,
             ['id' => $id],
             ['%d']
-        );
-
-        return $deleted !== false;
+        ) !== false;
     }
 
     public function count(): int

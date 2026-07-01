@@ -34,9 +34,11 @@ final class KeyFiguresModule implements ModuleInterface
         );
     }
 
-    public function enqueueAdminAssets(string $hook): void
+    public function enqueueAdminAssets(): void
     {
-        if ($hook !== 'cdg-studio_page_cdg-studio-key-figures') {
+        $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+
+        if ($page !== 'cdg-studio-key-figures') {
             return;
         }
 
@@ -44,7 +46,7 @@ final class KeyFiguresModule implements ModuleInterface
             'cdg-key-figures-admin',
             plugins_url('assets/admin.css', __FILE__),
             [],
-            '1.0.0'
+            '1.2.0'
         );
     }
 
