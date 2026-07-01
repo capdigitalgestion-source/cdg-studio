@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 declare(strict_types=1);
 
@@ -9,7 +9,7 @@ use CDGStudio\Modules\KeyFigures\KeyFiguresModule;
 
 final class ModuleRegistry
 {
-    /**
+    /**Z
      * @return array<class-string>
      */
     public static function all(): array
