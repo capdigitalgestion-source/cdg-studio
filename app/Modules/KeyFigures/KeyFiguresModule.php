@@ -14,7 +14,7 @@ final class KeyFiguresModule extends AbstractModule
     {
         $this->container->set(
             'keyfigures.repository',
-            fn () => new KeyFiguresRepository()
+            fn () => new KeyFiguresRepository($GLOBALS['wpdb'])
         );
 
         $this->container->set(

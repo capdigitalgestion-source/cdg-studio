@@ -4,8 +4,20 @@ declare(strict_types=1);
 
 namespace CDGStudio\Modules\KeyFigures;
 
+use wpdb;
+
 final class KeyFiguresRepository
 {
+    public function __construct(
+        private readonly wpdb $database
+    ) {
+    }
+
+    public function tableName(): string
+    {
+        return $this->database->prefix . 'cdg_studio_key_figures';
+    }
+
     /**
      * @return array<int, array<string, mixed>>
      */
