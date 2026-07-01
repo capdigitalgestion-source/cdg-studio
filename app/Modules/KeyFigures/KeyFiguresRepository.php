@@ -18,6 +18,20 @@ final class KeyFiguresRepository
         return $this->database->prefix . 'cdg_studio_key_figures';
     }
 
+    public function tableExists(): bool
+    {
+        $tableName = $this->tableName();
+
+        $result = $this->database->get_var(
+            $this->database->prepare(
+                'SHOW TABLES LIKE %s',
+                $tableName
+            )
+        );
+
+        return $result === $tableName;
+    }
+
     public function install(): void
     {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
